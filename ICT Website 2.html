@@ -1,0 +1,268 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WeReviews | Community Reviews</title>  <!-- ================== STYLE ================== -->  <style>
+    :root {
+      --primary: #6366f1;
+      --secondary: #f59e0b;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --bg: linear-gradient(135deg, #eef2ff, #f8fafc);
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--text);
+    }
+
+    nav {
+      background: #fff;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav h1 {
+      color: var(--primary);
+      font-size: 1.6rem;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    nav a:hover {
+      color: var(--primary);
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    section {
+      display: none;
+    }
+
+    section.active {
+      display: block;
+      animation: fade 0.4s ease;
+    }
+
+    @keyframes fade {
+      from {opacity: 0; transform: translateY(10px);} 
+      to {opacity: 1; transform: translateY(0);} 
+    }
+
+    /* ================== FORM ================== */
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+    }
+
+    input, textarea, select, button {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      font-size: 0.95rem;
+    }
+
+    textarea { resize: vertical; }
+
+    button {
+      background: var(--primary);
+      color: white;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover { opacity: 0.9; }
+
+    /* ================== STARS ================== */
+    .stars {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 12px;
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .stars span { color: #d1d5db; }
+    .stars span.active { color: var(--secondary); }
+
+    /* ================== REVIEWS ================== */
+    .reviews {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 22px;
+    }
+
+    .review {
+      background: white;
+      border-radius: 18px;
+      padding: 15px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .review img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      margin-bottom: 6px;
+      width: fit-content;
+    }
+
+    .worth { background: #dcfce7; color: #166534; }
+    .not-worth { background: #fee2e2; color: #991b1b; }
+
+    .muted { color: var(--muted); font-size: 0.85rem; }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+  </style></head>
+<body><!-- ================== NAV ================== --><nav>
+  <h1>WeReviews</h1>
+  <div>
+    <a href="#" onclick="showPage('home')">Home</a>
+    <a href="#" onclick="showPage('add')">Add Review</a>
+    <a href="#" onclick="showPage('reviews')">All Reviews</a>
+  </div>
+</nav><div class="container"><!-- ================== HOME ================== --><section id="home" class="active">
+  <div class="card">
+    <h2>Welcome 👋</h2>
+    <p class="muted">A community-driven platform where people share honest product experiences with images, ratings, and feedback.
+A global platform where real opinions matter. Discover honest reviews covering everything—from products and cars to food, places, books, and beyond.
+ Share your experience, explore diverse perspectives, and make informed decisions, because we believe in the <b>reality behind every thought.</b></p>
+  </div>
+</section><!-- ================== ADD REVIEW ================== --><section id="add">
+  <div class="card">
+    <h2>Add a Review</h2>
+    <input id="name" placeholder="Product name" />
+    <textarea id="text" placeholder="Write your experience"></textarea><div class="stars" id="starBox">
+  <span onclick="setStars(1)">★</span>
+  <span onclick="setStars(2)">★</span>
+  <span onclick="setStars(3)">★</span>
+  <span onclick="setStars(4)">★</span>
+  <span onclick="setStars(5)">★</span>
+</div>
+
+<select id="worth">
+  <option value="">Worth it?</option>
+  <option value="worth">YES</option>
+  <option value="not-worth">NO</option>
+</select>
+
+<input type="file" id="image" accept="image/*" />
+<button onclick="saveReview()">Publish Review</button>
+
+  </div>
+</section><!-- ================== REVIEWS ================== --><section id="reviews">
+  <div class="reviews" id="reviewList"></div>
+</section></div><footer>
+  WeReviews - A University Project
+</footer><!-- ================== SCRIPT ================== --><script>
+  let rating = 0;
+
+  function showPage(id) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (id === 'reviews') loadReviews();
+  }
+
+  function setStars(n) {
+    rating = n;
+    document.querySelectorAll('.stars span').forEach((s, i) => {
+      s.classList.toggle('active', i < n);
+    });
+  }
+
+  function saveReview() {
+    const name = document.getElementById('name').value.trim();
+    const text = document.getElementById('text').value.trim();
+    const worth = document.getElementById('worth').value;
+    const img = document.getElementById('image').files[0];
+
+    if (!name || !text || !worth || !img || rating === 0) {
+      alert('Complete all fields');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const reviews = JSON.parse(localStorage.getItem('reviews')) || [];
+      reviews.push({ name, text, worth, rating, img: reader.result });
+      localStorage.setItem('reviews', JSON.stringify(reviews));
+      alert('Review added successfully!');
+      location.reload();
+    };
+    reader.readAsDataURL(img);
+  }
+
+  function loadReviews() {
+    const box = document.getElementById('reviewList');
+    box.innerHTML = '';
+    const reviews = JSON.parse(localStorage.getItem('reviews')) || [];
+
+    reviews.reverse().forEach(r => {
+      const div = document.createElement('div');
+      div.className = 'review';
+
+      div.innerHTML = `
+        <img src="${r.img}">
+        <h3>${r.name}</h3>
+        <div>${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+        <span class="badge ${r.worth}">${r.worth === 'worth' ? 'Worth it' : 'Not worth it'}</span>
+        <p class="muted">${r.text}</p>
+      `;
+      box.appendChild(div);
+    });
+  }
+</script></body>
+</html>
